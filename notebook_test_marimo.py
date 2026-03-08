@@ -6,13 +6,6 @@ app = marimo.App()
 with app.setup:
     import marimo as mo
     from sage.all import var, assume, sqrt, exp, integral, pi, oo, erf, erfc
-    from sage.repl.rich_output.backend_marimo import BackendMarimo
-    from sage.repl.rich_output import get_display_manager
-    dm = get_display_manager()
-    dm.switch_backend(BackendMarimo())
-    print(dm.get_instance())
-    print(dm.preferences)
-
 
 
 @app.cell
@@ -26,23 +19,39 @@ def _():
 
 
 @app.cell
-def _(I0):
+def _():
+    from sage.repl.rich_output import get_display_manager
+    dm = get_display_manager()
+    print(dm)
+    print(dm.preferences)
+    return (dm,)
+
+
+@app.cell
+def _(I0, dm):
     dm.preferences.text = 'ascii_art'
     I0
     return
 
 
 @app.cell
-def _(I0):
+def _(I0, dm):
     dm.preferences.text = 'unicode_art'
     I0
     return
 
 
 @app.cell
-def _(I0):
+def _(I0, dm):
     dm.preferences.text = 'plain'
     I0
+    return
+
+
+@app.cell
+def _(dm):
+    # switch back to latex
+    dm.preferences.text = "latex"
     return
 
 
