@@ -1,18 +1,24 @@
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#     "marimo>=0.20.4",
+# ]
+# ///
+
 import marimo
 
 __generated_with = "0.20.4"
-app = marimo.App()
+app = marimo.App(
+    css_file="/usr/local/_marimo/custom.css",
+    auto_download=["html"],
+)
 
 with app.setup:
     import marimo as mo
-    from sage.all import var, assume, sqrt, exp, integral, pi, oo, erf, erfc
-    from sage.repl.rich_output.backend_marimo import BackendMarimo
-    from sage.repl.rich_output import get_display_manager
+    import passagemath_plot
+    from passagemath_symbolics import var, assume, sqrt, exp, integral, pi, oo, erf, erfc
+    from passagemath_repl import get_display_manager
     dm = get_display_manager()
-    dm.switch_backend(BackendMarimo())
-    print(dm.get_instance())
-    print(dm.preferences)
-
 
 
 @app.cell
@@ -21,6 +27,7 @@ def _():
     assume(v_th > 0); assume(v > 0); assume(u, 'real')
     f = rho / (sqrt(pi)*v_th) * exp(-(v-u)**2/(v_th**2))
     I0 = 1/rho * integral(f, v, -oo, 0)
+    dm.preferences.text = 'latex'
     I0.simplify_rational()
     return I0, x
 
@@ -49,7 +56,7 @@ def _(I0):
 @app.cell
 def _():
     # 3D plot
-    from sage.all import EuclideanSpace, sin, Integer, RealNumber
+    from passagemath_symbolics import EuclideanSpace, sin, Integer, RealNumber
     E = EuclideanSpace(names=('xi', 'yi', 'zi',)); (xi, yi, zi,) = E._first_ngens(3)
     vi = E.vector_field(-yi, xi, sin(xi*yi*zi), name='vi')
     p = E((Integer(3),-Integer(2),Integer(1)), name='p')
@@ -70,7 +77,7 @@ def _(a3dplot):
 @app.cell
 def _(x):
     # 2D plot
-    from sage.all import plot
+    from passagemath_plot import plot
     a2dplot = plot(x**2, (x,0,5))
     a2dplot
     return (a2dplot,)
