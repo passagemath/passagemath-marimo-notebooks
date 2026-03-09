@@ -2,6 +2,9 @@
 # requires-python = ">=3.13"
 # dependencies = [
 #     "marimo>=0.20.4",
+#     "passagemath-plot~=10.8.2rc4",
+#     "passagemath-repl~=10.8.2rc4",
+#     "passagemath-symbolics~=10.8.2rc4",
 # ]
 # ///
 
