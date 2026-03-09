@@ -2,6 +2,7 @@
 # requires-python = ">=3.13"
 # dependencies = [
 #     "marimo>=0.20.4",
+#     "passagemath-maxima~=10.8.2rc4",
 #     "passagemath-plot~=10.8.2rc4",
 #     "passagemath-repl~=10.8.2rc4",
 #     "passagemath-symbolics~=10.8.2rc4",
@@ -18,7 +19,7 @@ app = marimo.App(
 
 with app.setup:
     import marimo as mo
-    import passagemath_plot
+    import passagemath_plot, passagemath_maxima
     from passagemath_symbolics import var, assume, sqrt, exp, integral, pi, oo, erf, erfc
     from passagemath_repl import get_display_manager
     dm = get_display_manager()
