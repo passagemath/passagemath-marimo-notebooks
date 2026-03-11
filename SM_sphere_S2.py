@@ -2,6 +2,10 @@
 # requires-python = ">=3.13"
 # dependencies = [
 #     "marimo>=0.20.4",
+#     "passagemath-maxima==10.8.2",
+#     "passagemath-plot==10.8.2",
+#     "passagemath-repl==10.8.2",
+#     "passagemath-symbolics[maxima,plot,test]==10.8.2",
 # ]
 # ///
 
@@ -17,7 +21,7 @@ app = marimo.App(
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # SageManifolds example notebook using passagemath: The sphere $\mathbb{S}^2$
+    # SageManifolds example notebook using [passagemath](https://github.com/passagemath): The sphere $\mathbb{S}^2$
     """)
     return
 
@@ -26,10 +30,12 @@ def _(mo):
 def _():
     import marimo as mo
     import passagemath_maxima
+    from passagemath_symbolics import (
+        RR, SR, sin, cos, atan, atan2, pi, sqrt, exp, oo, diff, factor,
+        Manifold, EuclideanSpace, manifolds, Hom, FiniteRankFreeModule, dim, 
+    )
     from passagemath_plot import show, sphere
-    from passagemath_symbolics import manifolds, Manifold, RR, sin, cos, atan, atan2, pi, sqrt, EuclideanSpace, Hom, dim, FiniteRankFreeModule, diff, exp, SR, oo, factor
-    from passagemath_repl import get_display_manager
-    dm = get_display_manager()
+    from passagemath_repl import get_display_manager; dm = get_display_manager()
     return (
         EuclideanSpace,
         FiniteRankFreeModule,
@@ -58,8 +64,14 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    This marimo notebook, adapted from a Jupyter notebook published in https://sagemanifolds.obspm.fr/examples.html, demonstrates some differential geometry capabilities of SageMath on the example of the 2-dimensional sphere. The corresponding tools have been developed within
-    the [SageManifolds](https://sagemanifolds.obspm.fr) project.
+    This marimo notebook, adapted from a Jupyter notebook published in https://sagemanifolds.obspm.fr/examples.html, demonstrates some differential geometry capabilities of SageMath on the example of the 2-dimensional sphere.
+
+    The corresponding tools have been developed within
+    the [SageManifolds](https://sagemanifolds.obspm.fr) project. They are now available in Python environments via the modularized distributions of the Sage library developed by the [passagemath](https://github.com/passagemath) project.
+    - The SageManifolds functionality is shipped as part of [passagemath-symbolics](https://pypi.org/project/passagemath-symbolics/).
+    - The pip-installable package [passagemath-maxima](https://pypi.org/project/passagemath-maxima/) provides the backend for symbolic computation.
+    - [passagemath-plot](https://pypi.org/project/passagemath-plot/) provides 2D and 3D plotting facilities.
+    - [passagemath-repl](https://pypi.org/project/passagemath-repl/) provides the integration with the marimo notebook.
     """)
     return
 
@@ -235,7 +247,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    To find the method to create an open subset, we type `U = S2.<TAB>` to get the list of possible methods by autocompletion:
+    To find the method to create an open subset, we type `U = S2_1.<TAB>` to get the list of possible methods by autocompletion:
     """)
     return
 
