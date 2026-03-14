@@ -21,6 +21,8 @@ the [SageManifolds](https://sagemanifolds.obspm.fr) project. They are now availa
 
 ## Notebooks for downstream packages
 
+The passagemath project curates a [library of user packages that make use of the Sage library](https://github.com/passagemath#passagemath-in-the-mathematical-software-landscape) and makes them ready for the Scientific Python ecosystem. Here are some notebooks that illustrate the functionality of some of these projects.
+
 | Notebook                                                                                                                                                         | Description                                                                                                                                                                                 |
 |------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [cutgeneratingfunctionology.py](cutgeneratingfunctionology.py) <br>[![Open in molab](https://molab.marimo.io/molab-shield.svg)](https://molab.marimo.io/notebooks/nb_ZBG1ni5sECEQuz5eFukzA2) | Study of functions that generalize the integer rounding principle underlying the Chvátal–Gomory cuts and Gomory fractional cuts for integer linear optimization problems. |
