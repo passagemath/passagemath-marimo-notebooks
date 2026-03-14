@@ -23,7 +23,9 @@ def _(mo):
     mo.md(r"""
     # cutgeneratingfunctionology
 
-    ... is the study of functions that generalize the integer rounding principle underlying the Chvátal–Gomory cuts and Gomory fractional cuts for integer linear optimization problems. It is also the name of a [pip-installable Python package](https://pypi.org/project/cutgeneratingfunctionology/) that supports research in this area. (Use `pip install "cutgeneratingfunctionology[passagemath]"`.)
+    ... is the study of functions $\pi\colon \mathbb R \to \mathbb R$ that generalize the integer rounding principle underlying the Chvátal–Gomory cuts and Gomory fractional cuts for integer linear optimization problems.
+
+    It is also the name of a [pip-installable Python package](https://pypi.org/project/cutgeneratingfunctionology/) that supports research in this area. (Use `pip install "cutgeneratingfunctionology[passagemath]"`.)
     """)
     return
 
@@ -48,43 +50,45 @@ def _(mo):
 
 @app.cell
 def _(QQ, igp):
-    gomory_fractional = igp.gomory_fractional(QQ('4/5'))
-    igp.plot_with_colored_slopes(gomory_fractional).show(figsize=(8,2.5))
-    return (gomory_fractional,)
+    π_gomory_fractional = igp.gomory_fractional(QQ('4/5'))
+    igp.plot_with_colored_slopes(π_gomory_fractional).show(figsize=(8,2.5))
+    return (π_gomory_fractional,)
 
 
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Is the Gomory fractional cut best possible? The theory of cut-generating functions answers "no"; a function that rises above 1 is never "minimal". (Smaller is better for cut-generating functions.)
+    Is the Gomory fractional cut best possible? The theory of cut-generating functions answers "no"; a function that rises above 1 is never "minimal."
+
+    (Smaller is better for cut-generating functions.)
     """)
     return
 
 
 @app.cell
-def _(gomory_fractional, igp):
-    igp.minimality_test(gomory_fractional)
+def _(igp, π_gomory_fractional):
+    igp.minimality_test(π_gomory_fractional)
     return
 
 
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Here is an improvement of the Gomory fractional cut, the Gomory mixed-integer rounding cut.
+    Here is an improvement of the Gomory fractional cut, the Gomory mixed-integer cut $\pi_{\mathtt{gmic}}$.
     """)
     return
 
 
 @app.cell
 def _(QQ, igp):
-    gmic = igp.gmic(QQ('4/5'))
-    igp.plot_with_colored_slopes(gmic).show(figsize=(8,2))
-    return (gmic,)
+    π_gmic = igp.gmic(QQ('4/5'))
+    igp.plot_with_colored_slopes(π_gmic).show(figsize=(8,2))
+    return (π_gmic,)
 
 
 @app.cell
-def _(gmic, igp):
-    igp.minimality_test(gmic)
+def _(igp, π_gmic):
+    igp.minimality_test(π_gmic)
     return
 
 
@@ -97,8 +101,8 @@ def _(mo):
 
 
 @app.cell
-def _(gmic, igp):
-    igp.plot_2d_diagram(gmic, colorful=True)
+def _(igp, π_gmic):
+    igp.plot_2d_diagram(π_gmic, colorful=True)
     return
 
 
@@ -112,21 +116,48 @@ def _(mo):
 
 @app.cell
 def _(igp):
-    h5281 = igp.hildebrand_5_slope_28_1()
-    return (h5281,)
+    π_h5281 = igp.hildebrand_5_slope_28_1()
+    return (π_h5281,)
 
 
 @app.cell
-def _(h5281, igp):
-    igp.plot_2d_diagram(h5281, colorful=True).show(figsize=12)
+def _(igp, π_h5281):
+    igp.plot_2d_diagram(π_h5281, colorful=True).show(figsize=12)
     return
 
 
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    [More information](https://www.math.ucdavis.edu/~mkoeppe/art/infinite-group/)
+    Like $\pi_{\mathtt{gmic}}$, this cut-generating function is not just minimal, but actually "extreme."
     """)
+    return
+
+
+@app.cell
+def _(igp, π_h5281):
+    igp.extremality_test(π_h5281)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    [More information about cut-generating functions](https://www.math.ucdavis.edu/~mkoeppe/art/infinite-group/)
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    [More marimo notebooks showing functionality of passagemath, the pip-installable modularized fork of SageMath](https://github.com/passagemath/passagemath-marimo-notebooks)
+    """)
+    return
+
+
+@app.cell
+def _():
     return
 
 
