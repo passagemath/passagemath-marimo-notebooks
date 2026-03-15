@@ -6,7 +6,7 @@
 
 ## SageManifolds notebooks
 
-These marimo notebooks, adapted from Jupyter notebooks published in https://sagemanifolds.obspm.fr/examples.html, demonstrate some differential geometry capabilities of SageMath.
+These marimo notebooks, adapted from some of the Jupyter notebooks published in https://sagemanifolds.obspm.fr/examples.html, demonstrate some differential geometry capabilities of SageMath.
 
 The corresponding tools have been developed within
 the [SageManifolds](https://sagemanifolds.obspm.fr) project. They are now available in Python environments via the modularized distributions of the Sage library developed by the [passagemath](https://github.com/passagemath) project.
@@ -17,7 +17,8 @@ the [SageManifolds](https://sagemanifolds.obspm.fr) project. They are now availa
 
 | Notebook                                                                                                                                                         | Description                                                                                                                                                                                 |
 |------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [SM_sphere_S2.py](SM_sphere_S2.py) <br>[![Open in molab](https://molab.marimo.io/molab-shield.svg)](https://molab.marimo.io/notebooks/nb_LTtuUofpxnkemmZShfehFT) | The 2-sphere with multiple domains and charts, transition maps, scalar and vector fields, tangent spaces, curves, plot of charts and vector fields, embedding, pullback, Riemannian metric. |
+| [SM_sphere_S2.py](SM_sphere_S2.py) <br>[![Open in molab](https://molab.marimo.io/molab-shield.svg)](https://molab.marimo.io/notebooks/nb_LTtuUofpxnkemmZShfehFT) | The sphere $\mathbb{S}^2$ with multiple domains and charts, transition maps, scalar and vector fields, tangent spaces, curves, plot of charts and vector fields, embedding, pullback, Riemannian metric. |
+| [SM_sphere_S3_Hopf.py](SM_sphere_S3_Hopf.py) [![Open in molab](https://molab.marimo.io/molab-shield.svg)](https://molab.marimo.io/notebooks/nb_KZSJhQ7AwoNWdDqGqdYzh8) | The sphere $\mathbb{S}^3$ with various charts, quaternions, and Hopf fibration. |
 | [SM_Kerr_surfaces.py](SM_Kerr_surfaces.py) <br>[![Open in molab](https://molab.marimo.io/molab-shield.svg)](https://molab.marimo.io/notebooks/nb_LnRFetdWJJazCt5Tc3bMjc) | Black hole spacetimes: Kerr spacetime with rational polynomial, Kerr and Kerr-Schild coordinates, Kretschmann scalar, animated plot of the horizons and ergosurfaces. |
 
 ## Notebooks for downstream packages
