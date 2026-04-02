@@ -7,6 +7,7 @@
 #     "passagemath-flint==10.8.2",
 #     "passagemath-graphs==10.8.2",
 #     "passagemath-nauty==10.8.2",
+#     "passagemath-plot==10.8.2",
 #     "passagemath-polyhedra==10.8.2",
 #     "passagemath-repl==10.8.2",
 # ]
@@ -57,12 +58,6 @@ def _(mo):
 def _(matrix):
     A = matrix([[1, 0], [-1, -1], [0, 1]]); A
     return (A,)
-
-
-@app.cell
-def _(A):
-    A._unicode_art_matrix()
-    return
 
 
 @app.cell
@@ -151,7 +146,7 @@ def _():
 
 @app.cell
 def _(Graph):
-    g = Graph([(1, 3), (3, 8), (5, 2)]); g
+    g = Graph([(1, 3), (3, 8), (5, 2)]); print(g)
     return (g,)
 
 
@@ -163,7 +158,7 @@ def _(g):
 
 @app.cell
 def _(g):
-    g.incidence_matrix(vertices=True,edges=True)._unicode_art_matrix()
+    g.incidence_matrix(vertices=True, edges=True)._unicode_art_matrix()
     return
 
 
@@ -1070,7 +1065,7 @@ def _(clique_vertex_incidence_matrix, graphs):
 @app.cell
 def _(clique_vertex_incidence_matrix, perfect_but_not_unimodular_on_6):
     for G in perfect_but_not_unimodular_on_6: print(clique_vertex_incidence_matrix(G)._unicode_art_matrix())
-    return
+    return (G,)
 
 
 @app.cell
