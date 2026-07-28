@@ -3,19 +3,20 @@
 # dependencies = [
 #     "cysignals==1.12.6",
 #     "marimo",
-#     "passagemath-cmr[test]==10.8.2",
-#     "passagemath-flint==10.8.2",
-#     "passagemath-graphs==10.8.2",
-#     "passagemath-nauty==10.8.2",
-#     "passagemath-plot==10.8.2",
-#     "passagemath-polyhedra==10.8.2",
-#     "passagemath-repl==10.8.2",
+#     "matplotlib==3.10.9",
+#     "passagemath-cmr[test]==10.8.4",
+#     "passagemath-flint==10.8.4",
+#     "passagemath-graphs==10.8.4",
+#     "passagemath-nauty==10.8.4",
+#     "passagemath-plot==10.8.4",
+#     "passagemath-polyhedra[flint]==10.8.4",
+#     "passagemath-repl==10.8.4",
 # ]
 # ///
 
 import marimo
 
-__generated_with = "0.21.1"
+__generated_with = "0.23.15"
 app = marimo.App(
     width="medium",
     css_file="/usr/local/_marimo/custom.css",
@@ -30,7 +31,7 @@ def _(mo):
 
     This notebook illustrates Seymour's decomposition of totally unimodular matrices and regular matroids provided by [passagemath-cmr](https://pypi.org/project/passagemath-cmr/) – one of the modularized pip-installable packages of the Sage library provided by the [passagemath project](https://github.com/passagemath).
 
-    Use the "Packages" tab on the left to uv-install `passagemath-cmr[test] passagemath-polyhedra[flint] passagemath-nauty` for the functionality tested in this marimo notebook.
+    Use the "Packages" tab on the left to uv-install `passagemath-cmr[test] passagemath-polyhedra[flint] passagemath-nauty passagemath-plot` for the functionality tested in this marimo notebook.
     """)
     return
 
@@ -39,9 +40,22 @@ def _(mo):
 def _():
     import marimo as mo
     import passagemath_polyhedra, passagemath_flint, passagemath_graphs, passagemath_nauty, passagemath_repl
-    from passagemath_modules import matrix, unicode_art
+    from passagemath_cmr import matrix, unicode_art
+    from passagemath_graphs import matroids, Matroid, Graph, DiGraph, QQ, ZZ, graphs, digraphs
 
-    return matrix, mo, unicode_art
+    return (
+        DiGraph,
+        Graph,
+        Matroid,
+        QQ,
+        ZZ,
+        digraphs,
+        graphs,
+        matrix,
+        matroids,
+        mo,
+        unicode_art,
+    )
 
 
 @app.cell(hide_code=True)
@@ -49,15 +63,21 @@ def _(mo):
     mo.md(r"""
     ## 3.1 Matrices
 
-    The pip-installable package "passagemath-cmr"
+    The pip-installable package `passagemath-cmr` extends standard matrix types with specialized methods for Seymour's decomposition and recognition of totally unimodular (TU) matrices.
     """)
     return
 
 
 @app.cell
 def _(matrix):
-    A = matrix([[1, 0], [-1, -1], [0, 1]]); A
+    A = matrix([[1, 0], [-1, -1], [0, 1]], column_keys=['a', 'b'], row_keys=range(3)); A
     return (A,)
+
+
+@app.cell
+def _(A):
+    A._unicode_art_matrix()
+    return
 
 
 @app.cell
@@ -84,14 +104,8 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     ## 3.2 Module morphisms
-    """)
-    return
 
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    The package passagemath-modules also provides linear algebra facilities in a style favored in algebraic combinatorics. Users can define vector spaces and free modules with distinguished bases whose elements are indexed by arbitrary objects. Linear maps (module morphisms) between such vector spaces or modules are represented by matrices whose rows and columns are indexed by the basis indices.
+    The package `passagemath-modules` provides linear algebra facilities in a style favored in algebraic combinatorics. Users can define vector spaces and free modules with distinguished bases whose elements are indexed by arbitrary objects. Linear maps (module morphisms) between such vector spaces or modules are represented by matrices whose rows and columns are indexed by the basis indices.
     """)
     return
 
@@ -105,7 +119,7 @@ def _(matrix):
                  [ 0,  0,  1, -1,  1,  0,  1],
                  [ 0,  0, -1,  1, -1,  0,  0]],
                 column_keys=['a', 'b', 'c', 'd', 'e', 'f', 'g'],
-                row_keys=range(6)); A2
+                row_keys=range(6))
     return (A2,)
 
 
@@ -132,83 +146,58 @@ def _(mo):
     mo.md(r"""
     ## 3.3 Graphs
 
-    The package passagemath-graphs provides graph theory facilities. You can obtain the incidence matrix of an undirected graph and check whether it is totally unimodular.
+    Graph structures have a direct link to total unimodularity. The vertex-edge incidence matrix of any directed graph is totally unimodular.
     """)
     return
 
 
 @app.cell
-def _():
-    from passagemath_graphs import Graph, graphs, digraphs
-
-    return Graph, digraphs, graphs
-
-
-@app.cell
-def _(Graph):
-    g = Graph([(1, 3), (3, 8), (5, 2)]); print(g)
-    return (g,)
+def _(DiGraph):
+    G_directed = DiGraph([(0, 1), (1, 2), (2, 0)])
+    m_directed = G_directed.incidence_matrix(oriented=True)
+    res_directed, cert_directed = m_directed.is_totally_unimodular(certificate=True)
+    return cert_directed, res_directed
 
 
 @app.cell
-def _(g):
-    g.is_connected()
-    return
-
-
-@app.cell
-def _(g):
-    g.incidence_matrix(vertices=True, edges=True)._unicode_art_matrix()
-    return
-
-
-@app.cell
-def _(g):
-    A = g.incidence_matrix(vertices=True,edges=True)
-    return (A,)
-
-
-@app.cell
-def _(A):
-    _result, certificate = A.is_totally_unimodular(certificate=True)
-    certificate
-    return (certificate,)
-
-
-@app.cell
-def _(certificate):
-    certificate.child_nodes()
-    return
-
-
-@app.cell
-def _(certificate):
-    certificate.child_keys()
-    return
-
-
-@app.cell
-def _(certificate):
-    C1, C2 = certificate.child_nodes()
-    return C1, C2
-
-
-@app.cell
-def _(C1):
-    C1.graph().incidence_matrix(vertices=True,edges=True)._unicode_art_matrix()
-    return
-
-
-@app.cell
-def _(C2):
-    C2.graph().incidence_matrix(vertices=True,edges=True)._unicode_art_matrix()
+def _(cert_directed, res_directed):
+    res_directed, cert_directed
     return
 
 
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    We can also check whether the connected undirected graph has odd cycle packing number $\mathrm{ocp}(G)\le 1$. It is done by first checking if the incidence matrix is totally unimodular. If so, it is a bipartite graph with no odd cycle. If not, we can find a basis $B$, which containing at least one odd cycle (otherwise it cannot be a basis). Then by left multiplying the inverse of the basis and checking if the obtained matrix is totally unimodular, we can claim that the graph has odd cycle packing number $\log_2(\mathopen|\det(B)\mathclose|)$ if it is totally unimodular. In the following implementation, we use rref function to compute the new matrix for efficiency.
+    For undirected graphs, the incidence matrix is totally unimodular if and only if the graph is bipartite.
+    """)
+    return
+
+
+@app.cell
+def _(Graph):
+    c4 = Graph([(0, 1), (1, 2), (2, 3), (3, 0)])
+    c5 = Graph([(0, 1), (1, 2), (2, 3), (3, 4), (4, 0)])
+    res_c4 = c4.incidence_matrix().is_totally_unimodular()
+    res_c5, cert_c5 = c5.incidence_matrix().is_totally_unimodular(certificate=True)
+    return cert_c5, res_c4, res_c5
+
+
+@app.cell
+def _(cert_c5, res_c4, res_c5):
+    print("C4 is TU:", res_c4)
+    print("C5 is TU:", res_c5)
+    print("C5 certificate violating root node:", cert_c5[0])
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### 3.3.1 Odd Cycle Packing Number
+
+    We can check whether a connected undirected graph has odd cycle packing number $\mathrm{ocp}(G) \le 1$. It is done by first checking if the incidence matrix is totally unimodular. If so, it is a bipartite graph with no odd cycle ($\mathrm{ocp}(G) = 0$). If not, we can find a basis $B$, which contains at least one odd cycle (otherwise it cannot be a basis). Then by left multiplying the inverse of the basis and checking if the obtained matrix is totally unimodular, we can claim that the graph has odd cycle packing number $\log_2(|\det(B)|)$ (which is 1) if the obtained matrix is totally unimodular.
+
+    In the following implementation, we use the `rref` function to compute the new matrix after left multiplying the inverse of the basis for efficiency.
     """)
     return
 
@@ -216,220 +205,105 @@ def _(mo):
 @app.cell
 def _(graphs):
     gt = graphs.GrotzschGraph()
-    return (gt,)
+    At = gt.incidence_matrix(vertices=True, edges=True).matrix()
+    res_gt_tu, cert_gt_tu = At.is_totally_unimodular(certificate=True)
+    res_gt_rref_tu, cert_gt_rref_tu = At.rref().is_totally_unimodular(certificate=True)
+    return cert_gt_rref_tu, cert_gt_tu, res_gt_rref_tu, res_gt_tu
 
 
 @app.cell
-def _(gt):
-    _result, certificate_1 = gt.incidence_matrix(vertices=True, edges=True).is_totally_unimodular(certificate=True)
-    certificate_1
-    return
-
-
-@app.cell
-def _(gt):
-    At = gt.incidence_matrix(vertices=True,edges=True).matrix()
-    return (At,)
-
-
-@app.cell
-def _(At):
-    At.rref().is_totally_unimodular(certificate=True)
+def _(cert_gt_rref_tu, cert_gt_tu, res_gt_rref_tu, res_gt_tu):
+    print("Grötzsch Graph incidence matrix is TU:", res_gt_tu)
+    print("Grötzsch Graph certificate:", cert_gt_tu)
+    print("Grötzsch Graph rref matrix is TU:", res_gt_rref_tu)
+    print("Grötzsch Graph rref certificate:", cert_gt_rref_tu)
     return
 
 
 @app.cell
 def _(graphs):
     A_K6 = graphs.CompleteGraph(6).incidence_matrix()
-    _result, certificate_2 = A_K6.is_totally_unimodular(certificate=True)
-    certificate_2
-    return (A_K6,)
+    res_K6_tu, cert_K6_tu = A_K6.is_totally_unimodular(certificate=True)
+    res_K6_rref_tu, cert_K6_rref_tu = A_K6.rref().is_totally_unimodular(certificate=True)
+    return cert_K6_rref_tu, cert_K6_tu, res_K6_rref_tu, res_K6_tu
 
 
 @app.cell
-def _(A_K6):
-    A_K6.rref().is_totally_unimodular(certificate=True)
-    return
-
-
-@app.cell
-def _(graphs):
-    common_graphs = []
-    map_graphs = []
-    for _name in dir(graphs):
-        if _name.startswith('_'):
-            continue
-        attr = getattr(graphs, _name)
-        try:
-            g_1 = attr()
-            if hasattr(g_1, 'order') and hasattr(g_1, 'edges') and (len(g_1.edges()) >= len(g_1.vertices())):
-                if not g_1.is_connected():
-                    map_graphs.append((_name, g_1))
-                elif len(g_1.vertices()) < 600:
-                    common_graphs.append((_name, g_1))
-        except:
-            pass
-    print(f'Successfully loaded {len(common_graphs)} parameter-free named graphs.')
-    return common_graphs, map_graphs
-
-
-@app.cell
-def _(common_graphs):
-    sorted([(len(g[1].vertices()), len(g[1].edges()), g[0]) for g in common_graphs])
-    return
-
-
-@app.cell
-def _(common_graphs):
-    # about 5 minute running time
-    import time
-    import signal
-    from math import log2
-
-    class GraphTimeoutError(Exception):
-        pass
-
-    def timeout_handler(signum, frame):
-        raise GraphTimeoutError('Total time limit exceeded')
-    signal.signal(signal.SIGALRM, timeout_handler)
-    bipartite_graphs = []
-    ocp1_graphs = []
-    timed_out_graphs = []
-    TIMEOUT_SECONDS = 300
-    print(f"{'Graph Name':<30} | {'Time (s)':<10} | {'OCP'}")
-    print('-' * 65)
-    for _name, _gg in sorted(common_graphs, key=lambda x: len(x[1].vertices())):
-        _start_time = time.time()
-        _status = 'Processing'
-        try:
-            signal.alarm(TIMEOUT_SECONDS)
-            AA = _gg.incidence_matrix()
-            if AA.is_totally_unimodular(time_limit=TIMEOUT_SECONDS / 2):
-                bipartite_graphs.append((_name, _gg))
-                _status = '0'
-            elif AA.rref().is_totally_unimodular(time_limit=TIMEOUT_SECONDS / 2):
-                ocp1_graphs.append((_name, _gg))
-                _status = '1'
-            else:
-                _status = '>=2'
-            signal.alarm(0)
-        except GraphTimeoutError:
-            timed_out_graphs.append((_name, _gg))
-            _status = 'TIMEOUT (>5m)'
-            signal.alarm(0)
-        except RuntimeError:
-            timed_out_graphs.append((_name, _gg))
-            _status = 'TU TIMEOUT'
-            signal.alarm(0)
-        _elapsed = time.time() - _start_time
-        print(f'{_name:<30} | {_elapsed:<10.4f} | {_status}')
-    print('-' * 65)
-    print(f'Bipartite graphs found: {len(bipartite_graphs)}')
-    print(f'OCP1 graphs found:      {len(ocp1_graphs)}')
-    print(f'Timed out graphs:       {len(timed_out_graphs)}')
-    return ocp1_graphs, time
-
-
-@app.cell
-def _(map_graphs):
-    map_graphs
-    return
-
-
-@app.cell
-def _(map_graphs, ocp1_graphs, time):
-    for _name, _gg in sorted(map_graphs, key=lambda x: len(x[1].vertices())):
-        _start_time = time.time()
-        ocp_total = 0
-        for gg_cc in _gg.connected_components_subgraphs():
-            AA_1 = gg_cc.incidence_matrix()
-            _result, certificate_3 = AA_1.is_totally_unimodular(certificate=True)
-            if _result:
-                continue
-            elif AA_1.rref().is_totally_unimodular():
-                ocp_total = ocp_total + 1
-            else:
-                _status = '>=2'
-                break
-        if _status != '>=2':
-            ocp1_graphs.append((_name, _gg))
-            _status = f'{ocp_total}'
-        _elapsed = time.time() - _start_time
-        print(f'{_name:<30} | {_elapsed:<10.4f} | {_status}')
+def _(cert_K6_rref_tu, cert_K6_tu, res_K6_rref_tu, res_K6_tu):
+    print("K6 incidence matrix is TU:", res_K6_tu)
+    print("K6 certificate:", cert_K6_tu)
+    print("K6 rref matrix is TU:", res_K6_rref_tu)
+    print("K6 rref certificate:", cert_K6_rref_tu)
     return
 
 
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    The passagemath-cmr package also provides the recognition algorithm of network matrices. It can return the directed graph certificate of a network matrix, which can be used to reconstruct the original matrix.
+    ### 3.3.2 Recognition algorithm of network matrices
+
+    The `passagemath-cmr` package also provides the recognition algorithm of network matrices. It can return the directed graph certificate of a network matrix, which can be used to reconstruct the original matrix.
     """)
     return
 
 
 @app.cell
 def _(matrix):
-    A2 = matrix([[-1,  0,  0,  0,  1, -1,  0],
+    A2_g = matrix([[-1,  0,  0,  0,  1, -1,  0],
                  [ 1,  0,  0,  1, -1,  1,  0],
                  [ 0, -1,  0, -1,  1, -1,  0],
                  [ 0,  1,  0,  0,  0,  0,  1],
                  [ 0,  0,  1, -1,  1,  0,  1],
                  [ 0,  0, -1,  1, -1,  0,  0]],
                 column_keys=['a', 'b', 'c', 'd', 'e', 'f', 'g'],
-                row_keys=range(6)); A2
-    return (A2,)
+                row_keys=range(6))
+    return (A2_g,)
 
 
 @app.cell
-def _(A2):
-    A2._unicode_art_matrix()
+def _(A2_g):
+    A2_g_result, A2_g_certificate = A2_g.is_totally_unimodular(certificate=True); A2_g_result, A2_g_certificate
+    return (A2_g_certificate,)
+
+
+@app.cell
+def _(A2_g_certificate):
+    G_g = A2_g_certificate.graph()
+    return (G_g,)
+
+
+@app.cell
+def _(G_g):
+    M_g = G_g.incidence_matrix(vertices=True, edges=True)
+    return (M_g,)
+
+
+@app.cell
+def _(M_g):
+    M_g._unicode_art_matrix()
     return
 
 
 @app.cell
-def _(A2):
-    A2_result, A2_certificate = A2.is_totally_unimodular(certificate=True); A2_result, A2_certificate
-    return (A2_certificate,)
+def _(A2_g_certificate, G_g, M_g):
+    row_keys_g, forest_order_g = zip(*A2_g_certificate.forest_edges().items())
+    column_keys_g, coforest_order_g = zip(*A2_g_certificate.coforest_edges().items())
+    row_order_g = G_g.vertices()[:-1]
+    AA_g = M_g.matrix(row_order=row_order_g, column_order=forest_order_g).inverse() * M_g.matrix(row_order=row_order_g, column_order=coforest_order_g)
+    print(AA_g)
+    return AA_g, column_keys_g, row_keys_g
 
 
 @app.cell
-def _(A2_certificate):
-    G = A2_certificate.graph()
-    return (G,)
-
-
-@app.cell
-def _(G):
-    M = G.incidence_matrix(vertices=True,edges=True)
-    return (M,)
-
-
-@app.cell
-def _(M):
-    M._unicode_art_matrix()
-    return
-
-
-@app.cell
-def _(A2_certificate, G, M):
-    row_keys, forest_order = zip(*A2_certificate.forest_edges().items())
-    column_keys, coforest_order = zip(*A2_certificate.coforest_edges().items())
-    row_order = G.vertices()[:-1]
-    AA_2 = M.matrix(row_order=row_order, column_order=forest_order).inverse() * M.matrix(row_order=row_order, column_order=coforest_order)
-    print(AA_2)
-    return AA_2, column_keys, row_keys
-
-
-@app.cell
-def _(A2, AA_2, ZZ, column_keys, matrix, row_keys):
-    matrix(AA_2, base_ring=ZZ, row_keys=row_keys, column_keys=column_keys) == A2
+def _(A2_g, AA_g, ZZ, column_keys_g, matrix, row_keys_g):
+    matrix(AA_g, base_ring=ZZ, row_keys=row_keys_g, column_keys=column_keys_g) == A2_g
     return
 
 
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Here are some more examples of the two excluded minors $K_5$, $K_{3,3}$ for conetwork matrices.
+    Here are some more examples of the two excluded minors $K_5$, $K_{3,3}$ for conetwork/network matrices.
     """)
     return
 
@@ -455,9 +329,9 @@ def _(M_K5):
 
 @app.cell
 def _(graphs):
-    K33_undirect = graphs.CompleteBipartiteGraph(3,3)
-    K33 = K33_undirect.orient(lambda e:e if e[0] < e[1] else (e[1], e[0], e[2]))
-    M_K33 = K33.incidence_matrix(vertices=True,edges=True)
+    K33_undirect = graphs.CompleteBipartiteGraph(3, 3)
+    K33 = K33_undirect.orient(lambda e: e if e[0] < e[1] else (e[1], e[0], e[2]))
+    M_K33 = K33.incidence_matrix(vertices=True, edges=True)
     return (M_K33,)
 
 
@@ -475,8 +349,13 @@ def _(M_K33):
 
 @app.cell
 def _(M_K33):
-    _result, certificate_4 = M_K33.is_totally_unimodular(certificate=True)
-    certificate_4
+    res_K33, cert_K33 = M_K33.is_totally_unimodular(certificate=True)
+    return (cert_K33,)
+
+
+@app.cell
+def _(cert_K33):
+    cert_K33
     return
 
 
@@ -484,34 +363,15 @@ def _(M_K33):
 def _(mo):
     mo.md(r"""
     ## 3.4 Matroids
-    """)
-    return
 
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    The packages passagemath-graphs and passagemath-modules provide facilities for matroid theory. A comprehensive catalog of known matroids is a good starting point for investigations.
+    The packages `passagemath-graphs` and `passagemath-modules` provide facilities for matroid theory. A comprehensive catalog of known matroids is a good starting point for investigations. We can inspect the regular matroid $R_{10}$ and perform Seymour's decomposition.
     """)
     return
 
 
 @app.cell
-def _():
-    from passagemath_cmr import matroids, Matroid
-
-    return Matroid, matroids
-
-
-@app.cell
 def _(matroids):
-    dir(matroids.catalog)
-    return
-
-
-@app.cell
-def _(matroids):
-    R10 = matroids.catalog.R10(); R10
+    R10 = matroids.catalog.R10()
     return (R10,)
 
 
@@ -523,7 +383,9 @@ def _(R10):
 
 @app.cell
 def _(A, R10):
-    R10_rr = R10.representation(reduced=True, order=True); A
+    R10_rr = R10.representation(reduced=True, order=True)
+    # Reference A from cell 4
+    R10_rr, A
     return (R10_rr,)
 
 
@@ -552,44 +414,32 @@ def _(R10_certificate):
 
 
 @app.cell
-def _(M):
-    M1M = M.direct_sum(M); M1M
-    return (M1M,)
+def _(R10):
+    R10D = R10.dual(); R10D
+    return (R10D,)
 
 
 @app.cell
-def _(M1M, Matroid):
-    Matroid(M1M, regular=True)  ### bug, fixed in 10.6.34
+def _(R10D):
+    R10D_rr = R10D.representation(reduced=True, order=True); R10D_rr
+    return (R10D_rr,)
+
+
+@app.cell
+def _(R10D_rr):
+    R10D_rr._unicode_art_matrix()
     return
 
 
 @app.cell
-def _(M):
-    MD = M.dual(); MD
-    return (MD,)
-
-
-@app.cell
-def _(MD):
-    MD_rr = MD.representation(reduced=True, order=True); MD_rr
-    return (MD_rr,)
-
-
-@app.cell
-def _(MD_rr):
-    MD_rr._unicode_art_matrix()
+def _(R10, R10D):
+    R10D.is_isomorphic(R10)
     return
 
 
 @app.cell
-def _(M, MD):
-    MD.is_isomorphic(M)
-    return
-
-
-@app.cell
-def _(MD_rr):
-    MD_tu, MD_certificate = MD_rr.is_totally_unimodular(certificate=True); MD_certificate
+def _(R10D_rr):
+    R10D_tu, R10D_certificate = R10D_rr.is_totally_unimodular(certificate=True); R10D_certificate
     return
 
 
@@ -604,205 +454,86 @@ def _(Matroid, R10):
 @app.cell
 def _(R10_1_R10_reg):
     R10_1_R10_rr = R10_1_R10_reg.representation(reduced=True, order=True); R10_1_R10_rr
-    return
-
-
-app._unparsable_cell(
-    r"""
-    sage: _._unicode_art_matrix()
-             (1, 'g') (0, 'c') (0, 'd') (1, 'i') (0, 'g') (1, 'j') (1, 'b') (0, 'a') (0, 'e') (1, 'h') 
-    (0, 'f')⎛       0        1        1        0        0        0        0        1        0        0⎞
-    (0, 'i')⎜       0        0        0        0        1        0        0        1        1        0⎟
-    (1, 'e')⎜       1        0        0        1        0        1        1        0        0        1⎟
-    (0, 'j')⎜       0        1        1        0       -1        0        0        0        0        0⎟
-    (0, 'b')⎜       0        0       -1        0        1        0        0        0        1        0⎟
-    (1, 'a')⎜       0        0        0        0        0        1        1        0        0        1⎟
-    (1, 'f')⎜       1        0        0        0        0        0        1        0        0        1⎟
-    (0, 'h')⎜       0        1        0        0        0        0        0        1        1        0⎟
-    (1, 'c')⎜       1        0        0        1        0        0        0        0        0        1⎟
-    (1, 'd')⎝       0        0        0        1        0        1        0        0        0        1⎠
-    sage:                                                                                                                                                                  
-
-    sage: M = matroids.catalog.R10()
-    sage: M1M = M.direct_sum(M)
-    sage: M1M_reg = Matroid(M1M, regular=True)
-    sage: M1M_reg.representation(reduced=True, order=True)
-    Generic morphism:
-      From: Free module generated by {(0, 'd'), (0, 'g'), (1, 'i'), (0, 'a'), (1, 'j'), (1, 'h'), (0, 'f'), (1, 'e'), (0, 'i'), (1, 'b')} over Integer Ring
-      To:   Free module generated by {(0, 'h'), (0, 'j'), (1, 'f'), (0, 'e'), (1, 'c'), (1, 'g'), (1, 'd'), (0, 'b'), (0, 'c'), (1, 'a')} over Integer Ring
-    sage: M1M_reg.representation(reduced=True, order=True).is_totally_unimodular()
-    True
-    sage: M1M_reg.representation(reduced=True, order=True).is_totally_unimodular(certificate=True)
-    (True, OneSumNode (10×10) with 2 children)
-    sage: M1M_tu, M1M_cert = M1M_reg.representation(reduced=True, order=True).is_totally_unimodular(certificate=True)
-    sage: M1M_cert.morphism()
-    Generic morphism:
-      From: Free module generated by {(0, 'd'), (0, 'g'), (1, 'i'), (0, 'a'), (1, 'j'), (1, 'h'), (0, 'f'), (1, 'e'), (0, 'i'), (1, 'b')} over Integer Ring
-      To:   Free module generated by {(0, 'h'), (0, 'j'), (1, 'f'), (0, 'e'), (1, 'c'), (1, 'g'), (1, 'd'), (0, 'b'), (0, 'c'), (1, 'a')} over Integer Ring
-    sage: M1M_cert.as_ordered_tree()
-    OneSumNode (10×10) with 2 children[R10Node (5×5) a reduced matrix representation of R10 matroid[], R10Node (5×5) a reduced matrix representation of R10 matroid[]]
-    sage: unicode_art(M1M_cert.as_ordered_tree())
-    ╭─────────────OneSumNode (10×10) with 2 children─────────────╮
-    │                                                            │
-    R10Node (5×5) a reduced matrix representation of R10 matroid R10Node (5×5) a reduced matrix representation of R10 matroid
-    sage: M1M_reg.representation(reduced=True, order=True)._unicode_art_matrix()
-             (0, 'd') (0, 'g') (1, 'i') (0, 'a') (1, 'j') (1, 'h') (0, 'f') (1, 'e') (0, 'i') (1, 'b') 
-    (0, 'h')⎛       1        1        0        1        0        0        1        0        1        0⎞
-    (0, 'j')⎜       0        1        0        1        0        0        1        0        0        0⎟
-    (1, 'f')⎜       0        0        1        0        1        0        0        1        0        0⎟
-    (0, 'e')⎜       0        1        0        1        0        0        0        0        1        0⎟
-    (1, 'c')⎜       0        0        0        0        1        0        0        1        0        1⎟
-    (1, 'g')⎜       0        0        1        0        1        1        0        1        0        1⎟
-    (1, 'd')⎜       0        0        1        0        1        1        0        0        0        0⎟
-    (0, 'b')⎜       1        0        0        1        0        0        0        0        1        0⎟
-    (0, 'c')⎜       1        0        0        1        0        0        1        0        0        0⎟
-    (1, 'a')⎝       0        0        0        0        1        1        0        0        0        1⎠
-    sage: unicode_art(M1M_cert.block_matrix_form())
-    ⎛1 1 1 1 1│0 0 0 0 0⎞
-    ⎜0 1 1 0 1│0 0 0 0 0⎟
-    ⎜1 0 1 0 1│0 0 0 0 0⎟
-    ⎜0 1 1 1 0│0 0 0 0 0⎟
-    ⎜1 0 1 1 0│0 0 0 0 0⎟
-    ⎜─────────┼─────────⎟
-    ⎜0 0 0 0 0│1 1 1 0 0⎟
-    ⎜0 0 0 0 0│0 1 1 0 1⎟
-    ⎜0 0 0 0 0│1 1 1 1 1⎟
-    ⎜0 0 0 0 0│0 1 0 1 1⎟
-    ⎝0 0 0 0 0│1 1 0 1 0⎠
-    """,
-    name="_"
-)
-
-
-app._unparsable_cell(
-    r"""
-    sage: matroids.catalog.AG23minus()
-    AG23minus: Matroid of rank 3 on 8 elements with circuit-closures
-    {2: {{'a', 'b', 'c'}, {'a', 'd', 'f'}, {'a', 'e', 'g'}, {'b', 'd', 'h'}, {'b', 'e', 'f'}, {'c', 'd', 'g'}, {'c', 'e', 'h'}, {'f', 'g', 'h'}}, 3: {{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'}}}
-    sage: matroids.catalog.AG23minus().is_regular()
-    False
-    sage: AG23minus = matroids.catalog.AG23minus()
-    sage: Matroid(AG23minus, regular=True)
-    Regular matroid of rank 3 on 8 elements with 32 bases
-    sage: _.is_regular()
-    True
-    sage: Matroid?
-    sage: Matroid(AG23minus, regular=True, check=True)
-    Regular matroid of rank 3 on 8 elements with 32 bases
-    sage: AG23minus.is_regular()
-    False
-    sage: AG23minus.is_regular?
-    Signature:      AG23minus.is_regular(self, algorithm=None)
-    Docstring:     
-    Return if \"self\" is regular.
-
-    A regular matroid is one that can be represented by a totally
-    unimodular matrix, the latter being a matrix over \mathbb{R} for which
-    every square submatrix has determinant in \{0, 1, -1\}. A matroid is
-    regular if and only if it is representable over every field.
-    Alternatively, a matroid is regular if and only if it has no minor
-    isomorphic to U_{2, 4}, F_7, or F_7^*.
-
-    INPUT:
-
-    * \"algorithm\" -- (default: \"None\"); specify which algorithm to check
-      regularity:
-
-      * \"None\" -- an algorithm based on excluded minors.
-
-      * \"\"cmr\"\" -- an algorithm based on Seymour's decomposition, the
-        optional package \"cmr\" is required.
-
-    See also:
-
-      \"M.is_regular()\" \"M.is_regular()\"
-      \"M._is_binary_linear_matroid_regular()\" \"M.is_totally_unimodular()\"
-
-    EXAMPLES:
-
-       sage: M = matroids.catalog.Wheel4()
-       sage: M.is_regular()
-       True
-       sage: M = matroids.catalog.R9()
-       sage: M.is_regular(algorithm=\"cmr\")
-       False
-       sage: from sage.matroids.advanced import LinearMatroid
-       sage: M1 = LinearMatroid(Matrix(ZZ,[[1,0,1,1],[0,1,1,-1]]))
-       sage: M1.is_regular(algorithm=\"cmr\")
-       False
-
-    REFERENCES:
-
-    [Oxl2011], p. 373, chapter 13.
-    Init docstring: Initialize self.  See help(type(self)) for accurate signature.
-    File:           ~/s/sage/sage-rebasing/local/var/lib/sage/venv-python3.10/lib/python3.10/site-packages/sage/matroids/matroid.pyx
-    Type:           builtin_function_or_method
-    sage: AG23minus.is_regular()
-    False
-    sage: AG23minus.is_regular(algorithm='cmr')
-    False
-    sage: AG23minus.is_binary()
-    False
-    sage: AG23minus.is_ternary()
-    True
-    sage: type(AG23minus)
-    <class 'sage.matroids.circuit_closures_matroid.CircuitClosuresMatroid'>
-    sage: AG23minus.is_ternary?
-    Signature:      AG23minus.is_ternary(self, randomized_tests=1)
-    Docstring:     
-    Decide if \"self\" is a ternary matroid.
-
-    INPUT:
-
-    * \"randomized_tests\" -- (default: 1) an integer; the number of times a
-      certain necessary condition for being ternary is tested, using
-      randomization
-
-    OUTPUT: boolean
-
-    ALGORITHM:
-
-    First, compare the ternary matroids local to two random bases. If
-    these matroids are not  isomorphic, return \"False\". This test is
-    performed \"randomized_tests\" times. Next, test if a ternary matroid
-    local to some basis is isomorphic to \"self\".
-
-    See also: \"M.ternary_matroid()\"
-
-    EXAMPLES:
-
-       sage: N = matroids.catalog.Fano()
-       sage: N.is_ternary()
-       False
-       sage: N = matroids.catalog.NonFano()
-       sage: N.is_ternary()
-       True
-    Init docstring: Initialize self.  See help(type(self)) for accurate signature.
-    File:           ~/s/sage/sage-rebasing/local/var/lib/sage/venv-python3.10/lib/python3.10/site-packages/sage/matroids/matroid.pyx
-    Type:           builtin_function_or_method
-    sage: AG23minus.ternary_matroid()
-    Ternary matroid of rank 3 on 8 elements, type 2-
-    sage: AG23minus.ternary_matroid().representation(reduced=True, order=True)
-    Generic morphism:
-      From: Free module generated by {'c', 'd', 'e', 'f', 'g'} over Finite Field of size 3
-      To:   Free module generated by {'a', 'b', 'h'} over Finite Field of size 3
-    sage: AG23minus.ternary_matroid().representation(reduced=True, order=True).is_totally_unimodular()
-    False
-    sage: AG23minus.ternary_matroid().representation(reduced=True, order=True).is_totally_unimodular(certificate=True)
-    (False, (None, ((0,), (2,))))
-    sage: AG23minus.ternary_matroid().representation(reduced=True, order=True)._unicode_art_matrix()
-      c d e f g 
-    a⎛1 0 2 2 2⎞
-    b⎜2 1 1 2 2⎟
-    h⎝0 1 2 2 1⎠
-    sage: 
-    sage: AG23minus_rr = AG23minus.ternary_matroid().representation(reduced=True, order=True)
-    """,
-    name="_"
-)
+    return (R10_1_R10_rr,)
 
 
 @app.cell
+def _(R10_1_R10_rr):
+    R10_1_R10_tu, R10_1_R10_certificate = R10_1_R10_rr.is_totally_unimodular(certificate=True); R10_1_R10_certificate
+    return (R10_1_R10_certificate,)
+
+
+@app.cell
+def _(R10_1_R10_certificate, unicode_art):
+    unicode_art(R10_1_R10_certificate.as_ordered_tree())
+    return
+
+
+@app.cell
+def _(R10_1_R10_rr):
+    R10_1_R10_rr._unicode_art_matrix()
+    return
+
+
+@app.cell
+def _(R10_1_R10_certificate, unicode_art):
+    unicode_art(R10_1_R10_certificate.block_matrix_form())
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### 3.4.1 Non-Regular Matroids (AG23minus)
+
+    Not all matroids are regular. The `AG23minus` matroid is representable over GF(3) (ternary) but is not binary, meaning it cannot be represented by a totally unimodular matrix.
+    """)
+    return
+
+
+@app.cell
+def _(matroids):
+    AG23minus = matroids.catalog.AG23minus()
+    return (AG23minus,)
+
+
+@app.cell
+def _(AG23minus):
+    AG23minus.is_regular()
+    return
+
+
+@app.cell
+def _(AG23minus):
+    AG23minus.is_binary(), AG23minus.is_ternary()
+    return
+
+
+@app.cell
+def _(AG23minus):
+    AG23minus_ternary = AG23minus.ternary_matroid()
+    return (AG23minus_ternary,)
+
+
+@app.cell
+def _(AG23minus_ternary):
+    AG23minus_rr = AG23minus_ternary.representation(reduced=True, order=True)
+    return (AG23minus_rr,)
+
+
+@app.cell
+def _(AG23minus_rr):
+    AG23minus_rr._unicode_art_matrix()
+    return
+
+
+@app.cell
+def _(AG23minus_rr):
+    AG23minus_tu, AG23minus_certificate = AG23minus_rr.is_totally_unimodular(certificate=True); AG23minus_certificate
+    return
+
+
+@app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
     ## 3.5 Polyhedra and linear programming
@@ -819,34 +550,14 @@ def _():
     return (MixedIntegerLinearProgram,)
 
 
-@app.cell
-def _():
-    from passagemath_cmr import QQ
-
-    return (QQ,)
-
-
-@app.cell
+@app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
     ### 3.5.1 Network flow
-    """)
-    return
 
-
-@app.cell
-def _(mo):
-    mo.md(r"""
     As an illustrating example, we set up a min-cost flow problem.
     """)
     return
-
-
-@app.cell
-def _():
-    from passagemath_cmr import graphs
-
-    return (graphs,)
 
 
 @app.cell
@@ -889,15 +600,20 @@ def _(DPA):
 
 @app.cell
 def _(DPA):
-    imbalance = DPA.image().random_element().lift(); imbalance
+    import random
+    dom = DPA.domain()
+    random_flow = dom.sum(random.randint(0, 5) * dom.monomial(e) for e in dom.basis().keys())
+    imbalance = DPA(random_flow); imbalance
     return (imbalance,)
 
 
 @app.cell
 def _(DPA, MixedIntegerLinearProgram, QQ, imbalance):
+    from sage.modules.free_module_element import vector
+    imbalance_vector = vector(QQ, [imbalance[v] for v in sorted(imbalance.parent().basis().keys())])
     Mincostflow = MixedIntegerLinearProgram(solver='GLPK', base_ring=QQ)
     flow = Mincostflow.new_variable(real=True, nonnegative=True, name="x"); flow
-    Mincostflow.add_constraint(DPA.matrix() * flow, min=imbalance.to_vector(), max=imbalance.to_vector())
+    Mincostflow.add_constraint(DPA.matrix() * flow, min=imbalance_vector, max=imbalance_vector)
     return (Mincostflow,)
 
 
@@ -925,54 +641,51 @@ def _(DPP):
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
     ### 3.5.2 Stable sets
 
-    QSTAB vs STAB; know integral polyhedron for perfect graphs, investigate TU-ness of constraint matrix. When non-TU, use certificate to find violating subgraphs... calls them "unimodular graphs"
+    For perfect graphs, the fractional stable set polyhedron (QSTAB) is equal to the stable set polyhedron (STAB), which is integral. Although QSTAB is integral for perfect graphs, the constraint matrix (clique-vertex incidence matrix) is not necessarily totally unimodular. When the matrix is non-TU, we can use the decomposition certificate to investigate the failure.
     """)
     return
 
 
 @app.cell
-def _():
-    return
+def _(MixedIntegerLinearProgram, QQ, graphs, matrix):
+    def clique_vertex_incidence_matrix(G):
+        cliques = [frozenset(Q) for Q in G.cliques_maximal()]
+        vertices = list(G.vertices(sort=True))
+        data = [[1 if v in clique else 0 for v in vertices] for clique in cliques]
+        return matrix(data, column_keys=vertices, row_keys=range(len(cliques)))
 
+    W6 = graphs.WheelGraph(6)
+    W6_clique_vertex_incidence_matrix = clique_vertex_incidence_matrix(W6)
 
-@app.cell
-def _(graphs):
-    W6 = graphs.WheelGraph(7); W6
-    return (W6,)
+    W6_stab_mip = MixedIntegerLinearProgram(solver='GLPK', base_ring=QQ)
+    x = W6_stab_mip.new_variable(real=True, nonnegative=True, name="x")
+    for v in W6.vertices():
+        W6_stab_mip.set_max(x[v], 1)
+    for clique in W6.cliques_maximal():
+        W6_stab_mip.add_constraint(sum(x[v] for v in clique) <= 1)
+    return (
+        W6,
+        W6_clique_vertex_incidence_matrix,
+        W6_stab_mip,
+        clique_vertex_incidence_matrix,
+    )
 
 
 @app.cell
 def _(W6):
     max_cliques = [frozenset(Q) for Q in W6.cliques_maximal()]; max_cliques
-    return (max_cliques,)
-
-
-@app.cell
-def _(W6, matrix, max_cliques):
-    W6_clique_vertex_incidence_matrix = matrix(entries=lambda clique, vertex: 1 if vertex in clique else 0,
-                                                     row_keys=max_cliques, column_keys=W6.vertices())
-    W6_clique_vertex_incidence_matrix
-    return (W6_clique_vertex_incidence_matrix,)
+    return
 
 
 @app.cell
 def _(W6_clique_vertex_incidence_matrix):
     W6_clique_vertex_incidence_matrix._unicode_art_matrix()
     return
-
-
-@app.cell
-def _(MixedIntegerLinearProgram, QQ, W6_clique_vertex_incidence_matrix):
-    W6_stab_mip = MixedIntegerLinearProgram(solver='GLPK', base_ring=QQ)
-    W6_stab_x = W6_stab_mip.new_variable(integer=True, nonnegative=True)
-    W6_stab_mip.add_constraint(W6_clique_vertex_incidence_matrix.matrix() * W6_stab_x <= 1)
-    W6_stab_mip.show()
-    return (W6_stab_mip,)
 
 
 @app.cell
@@ -988,10 +701,10 @@ def _(W6_qstab):
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    It's integral!
+    The stable set polyhedron of $W_6$ contains fractional vertices (non-integral), because $W_6$ contains a $C_5$ cycle and is thus not perfect.
     """)
     return
 
@@ -1002,14 +715,44 @@ def _(W6_clique_vertex_incidence_matrix):
     return
 
 
-@app.cell
-def _(matrix):
-    def clique_vertex_incidence_matrix(graph):
-        max_cliques = [frozenset(Q) for Q in graph.cliques_maximal()]
-        return matrix(entries=lambda clique, vertex: 1 if vertex in clique else 0,
-                      row_keys=max_cliques, column_keys=graph.vertices())
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    #### Interactive Wheel Graph Explorer
 
-    return (clique_vertex_incidence_matrix,)
+    You can use the slider below to dynamically adjust the size of the Wheel Graph $W_n$ and inspect the total unimodularity of its clique-vertex incidence matrix.
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    n_slider = mo.ui.slider(start=3, stop=20, step=1, value=6, label="Wheel Graph size (n)")
+    n_slider
+    return (n_slider,)
+
+
+@app.cell
+def _(clique_vertex_incidence_matrix, graphs, n_slider):
+    W_interactive = graphs.WheelGraph(n_slider.value)
+    W_interactive_tu, W_interactive_cert = clique_vertex_incidence_matrix(W_interactive).is_totally_unimodular(certificate=True)
+    return W_interactive_cert, W_interactive_tu
+
+
+@app.cell
+def _(W_interactive_cert, W_interactive_tu, n_slider):
+    print(f"W_{n_slider.value} is totally unimodular: {W_interactive_tu}")
+    if not W_interactive_tu:
+        print("Violation certificate root node:", W_interactive_cert[0])
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Let's check the total unimodularity of clique-vertex incidence matrices for a family of Wheel graphs $W_n$.
+    """)
+    return
 
 
 @app.cell
@@ -1018,9 +761,11 @@ def _(clique_vertex_incidence_matrix, graphs):
     return
 
 
-@app.cell
-def _(clique_vertex_incidence_matrix, graphs):
-    all(clique_vertex_incidence_matrix(G).is_totally_unimodular() for G in graphs(4))
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    We can search for small non-unimodular graphs on 5 and 6 vertices.
+    """)
     return
 
 
@@ -1064,8 +809,8 @@ def _(clique_vertex_incidence_matrix, graphs):
 
 @app.cell
 def _(clique_vertex_incidence_matrix, perfect_but_not_unimodular_on_6):
-    for G in perfect_but_not_unimodular_on_6: print(clique_vertex_incidence_matrix(G)._unicode_art_matrix())
-    return (G,)
+    for g in perfect_but_not_unimodular_on_6: print(clique_vertex_incidence_matrix(g)._unicode_art_matrix())
+    return
 
 
 @app.cell
@@ -1114,10 +859,12 @@ def _(
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
     ## 3.6 Detailed example for Seymour's decomposition
+
+    We can analyze a larger matrix `MM` of size 16x16 to get one possible Seymour decomposition tree.
     """)
     return
 
@@ -1155,6 +902,16 @@ def _(MM_certificate, unicode_art):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    The certificate `MM_certificate` is a `SeriesParallelReductionNode`. A Series-Parallel Reduction Node indicates that the input matrix arises from a smaller matrix `M'` (called the **core**) by successively adding zero/unit rows/columns, or duplicates/scalings of existing rows/columns.
+
+    We can retrieve this core matrix using the `.core()` method, which is defined specifically for `SeriesParallelReductionNode`.
+    """)
+    return
+
+
 @app.cell
 def _(MM_certificate):
     MM1 = MM_certificate.core()
@@ -1176,11 +933,6 @@ def _(MM_certificate):
 @app.cell
 def _(MM_certificate):
     MM_certificate.child_nodes()[0].child_nodes()
-    return
-
-
-@app.cell
-def _():
     return
 
 
