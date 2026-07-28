@@ -2,15 +2,16 @@
 # requires-python = ">=3.12"
 # dependencies = [
 #     "cysignals==1.12.6",
-#     "marimo",
+#     "marimo==0.23.15",
 #     "matplotlib==3.10.9",
-#     "passagemath-cmr[test]==10.8.4",
-#     "passagemath-flint==10.8.4",
-#     "passagemath-graphs==10.8.4",
-#     "passagemath-nauty==10.8.4",
-#     "passagemath-plot==10.8.4",
-#     "passagemath-polyhedra[flint]==10.8.4",
-#     "passagemath-repl==10.8.4",
+#     "passagemath-cmr[test]==10.8.7",
+#     "passagemath-flint==10.8.7",
+#     "passagemath-graphs==10.8.7",
+#     "passagemath-nauty==10.8.7",
+#     "passagemath-pari==10.8.7",
+#     "passagemath-plot==10.8.7",
+#     "passagemath-polyhedra[flint]==10.8.7",
+#     "passagemath-repl==10.8.7",
 # ]
 # ///
 
@@ -39,6 +40,7 @@ def _(mo):
 @app.cell
 def _():
     import marimo as mo
+    import passagemath_pari
     import passagemath_polyhedra, passagemath_flint, passagemath_graphs, passagemath_nauty, passagemath_repl
     from passagemath_cmr import matrix, unicode_art
     from passagemath_graphs import matroids, Matroid, Graph, DiGraph, QQ, ZZ, graphs, digraphs
