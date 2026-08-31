@@ -4,14 +4,14 @@
 #     "cysignals==1.12.6",
 #     "marimo==0.23.15",
 #     "matplotlib==3.10.9",
-#     "passagemath-cmr[test]==10.8.7",
-#     "passagemath-flint==10.8.7",
-#     "passagemath-graphs==10.8.7",
-#     "passagemath-nauty==10.8.7",
-#     "passagemath-pari==10.8.7",
-#     "passagemath-plot==10.8.7",
-#     "passagemath-polyhedra[flint]==10.8.7",
-#     "passagemath-repl==10.8.7",
+#     "passagemath-cmr[test]==10.8.10",
+#     "passagemath-flint==10.8.10",
+#     "passagemath-graphs==10.8.10",
+#     "passagemath-nauty==10.8.10",
+#     "passagemath-pari==10.8.10",
+#     "passagemath-plot==10.8.10",
+#     "passagemath-polyhedra[flint]==10.8.10",
+#     "passagemath-repl==10.8.10",
 # ]
 # ///
 
