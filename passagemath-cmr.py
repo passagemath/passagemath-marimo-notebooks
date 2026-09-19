@@ -479,8 +479,8 @@ def _(R10_1_R10_rr):
 
 
 @app.cell
-def _(R10_1_R10_certificate, unicode_art):
-    unicode_art(R10_1_R10_certificate.block_matrix_form())
+def _(R10_1_R10_certificate):
+    R10_1_R10_certificate.block_matrix_form()
     return
 
 
@@ -635,7 +635,7 @@ def _(Mincostflow, QQ):
 
 @app.cell
 def _(DPP):
-    DPP.vertices_list()
+    DPP.vertices_matrix()
     return
 
 
@@ -658,10 +658,10 @@ def _(mo):
 @app.cell
 def _(MixedIntegerLinearProgram, QQ, graphs, matrix):
     def clique_vertex_incidence_matrix(G):
-        cliques = [frozenset(Q) for Q in G.cliques_maximal()]
+        cliques = [tuple(sorted(Q)) for Q in G.cliques_maximal()]
         vertices = list(G.vertices(sort=True))
         data = [[1 if v in clique else 0 for v in vertices] for clique in cliques]
-        return matrix(data, column_keys=vertices, row_keys=range(len(cliques)))
+        return matrix(data, column_keys=vertices, row_keys=cliques)
 
     W6 = graphs.WheelGraph(6)
     W6_clique_vertex_incidence_matrix = clique_vertex_incidence_matrix(W6)
@@ -673,17 +673,10 @@ def _(MixedIntegerLinearProgram, QQ, graphs, matrix):
     for clique in W6.cliques_maximal():
         W6_stab_mip.add_constraint(sum(x[v] for v in clique) <= 1)
     return (
-        W6,
         W6_clique_vertex_incidence_matrix,
         W6_stab_mip,
         clique_vertex_incidence_matrix,
     )
-
-
-@app.cell
-def _(W6):
-    max_cliques = [frozenset(Q) for Q in W6.cliques_maximal()]; max_cliques
-    return
 
 
 @app.cell
@@ -724,6 +717,8 @@ def _(mo):
     mo.md(r"""
     #### Interactive Wheel Graph Explorer
 
+    Let's check the total unimodularity of clique-vertex incidence matrices for the family of Wheel graphs $W_n$.
+
     You can use the slider below to dynamically adjust the size of the Wheel Graph $W_n$ and inspect the total unimodularity of its clique-vertex incidence matrix.
     """)
     return
@@ -740,6 +735,7 @@ def _(mo):
 def _(clique_vertex_incidence_matrix, graphs, n_slider):
     W_interactive = graphs.WheelGraph(n_slider.value)
     W_interactive_tu, W_interactive_cert = clique_vertex_incidence_matrix(W_interactive).is_totally_unimodular(certificate=True)
+    W_interactive.plot()
     return W_interactive_cert, W_interactive_tu
 
 
@@ -754,20 +750,7 @@ def _(W_interactive_cert, W_interactive_tu, n_slider):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Let's check the total unimodularity of clique-vertex incidence matrices for a family of Wheel graphs $W_n$.
-    """)
-    return
-
-
-@app.cell
-def _(clique_vertex_incidence_matrix, graphs):
-    [clique_vertex_incidence_matrix(graphs.WheelGraph(n)).is_totally_unimodular() for n in range(20)]
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
+    #### Search for small non-unimodular examples
     We can search for small non-unimodular graphs on 5 and 6 vertices.
     """)
     return
@@ -813,12 +796,17 @@ def _(clique_vertex_incidence_matrix, graphs):
 
 @app.cell
 def _(clique_vertex_incidence_matrix, perfect_but_not_unimodular_on_6):
-    for g in perfect_but_not_unimodular_on_6: print(clique_vertex_incidence_matrix(g)._unicode_art_matrix())
+    for g in perfect_but_not_unimodular_on_6: 
+        print(clique_vertex_incidence_matrix(g)._unicode_art_matrix())
     return
 
 
 @app.cell
-def _(clique_vertex_incidence_matrix, perfect_but_not_unimodular_on_6, unicode_art):
+def _(
+    clique_vertex_incidence_matrix,
+    perfect_but_not_unimodular_on_6,
+    unicode_art,
+):
     [
         unicode_art(
             clique_vertex_incidence_matrix(G)
@@ -915,7 +903,7 @@ def _(MM_certificate, unicode_art):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    The certificate `MM_certificate` is a `SeriesParallelReductionNode`. A Series-Parallel Reduction Node indicates that the input matrix arises from a smaller matrix `M'` (called the **core**) by successively adding zero/unit rows/columns, or duplicates/scalings of existing rows/columns.
+    The certificate `MM_certificate` is a `SeriesParallelReductionNode`. Such a node indicates that the input matrix arises from a smaller matrix $M'$ (called the **core**) by successively adding zero/unit rows/columns, or duplicates/scalings of existing rows/columns.
 
     We can retrieve this core matrix using the `.core()` method, which is defined specifically for `SeriesParallelReductionNode`.
     """)
