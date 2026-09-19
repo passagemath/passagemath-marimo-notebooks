@@ -17,7 +17,7 @@
 
 import marimo
 
-__generated_with = "0.23.15"
+__generated_with = "0.24.0"
 app = marimo.App(
     width="medium",
     css_file="/usr/local/_marimo/custom.css",
@@ -32,7 +32,7 @@ def _(mo):
 
     This notebook illustrates Seymour's decomposition of totally unimodular matrices and regular matroids provided by [passagemath-cmr](https://pypi.org/project/passagemath-cmr/) – one of the modularized pip-installable packages of the Sage library provided by the [passagemath project](https://github.com/passagemath).
 
-    Use the "Packages" tab on the left to uv-install `passagemath-cmr[test] passagemath-polyhedra[flint] passagemath-nauty passagemath-plot` for the functionality tested in this marimo notebook.
+    If packages are not already loaded through the marimo sandbox, use the "Packages" tab on the left to uv-install `passagemath-cmr[test] passagemath-polyhedra[flint] passagemath-nauty passagemath-plot` for the functionality demonstrated in this marimo notebook.
     """)
     return
 
@@ -44,7 +44,8 @@ def _():
     import passagemath_polyhedra, passagemath_flint, passagemath_graphs, passagemath_nauty, passagemath_repl
     from passagemath_cmr import matrix, unicode_art
     from passagemath_graphs import matroids, Matroid, Graph, DiGraph, QQ, ZZ, graphs, digraphs
-
+    import sage.typeset.character_art
+    sage.typeset.character_art.MAX_WIDTH = 200
     return (
         DiGraph,
         Graph,
