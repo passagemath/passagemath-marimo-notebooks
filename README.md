@@ -1,5 +1,12 @@
 # passagemath-marimo-notebooks: Example marimo notebooks
 
+## Example notebooks for passagemath distributions
+
+| Notebook                                                                                                                                                         | Description                                                                                                                                                                                 |
+|------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [passagemath-cmr.py](passagemath-cmr.py) <br>[![Open in molab](https://molab.marimo.io/molab-shield.svg)](https://molab.marimo.io/https://github.com/passagemath/passagemath-marimo-notebooks/blob/main/passagemath-cmr.py) | Seymour's decomposition of totally unimodular matrices and regular matroids, using the [Combinatorial Matrix Recognition](https://discopt.github.io/cmr/) library. |
+
+
 ## Test notebook for rich output
 
 [notebook_test_marimo.py](notebook_test_marimo.py)
