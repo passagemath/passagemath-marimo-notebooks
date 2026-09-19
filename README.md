@@ -2,6 +2,9 @@
 
 ## Example notebooks for passagemath distributions
 
+🐙[passagemath](https://github.com/passagemath/passagemath) provides the full functionality of SageMath
+and more in pip-installable modularized packages (distributions), which can also be used separately.
+
 | Notebook                                                                                                                                                                                                                       | Description                                                                                                                                                                                                                         |
 |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [passagemath-cmr.py](passagemath-cmr.py) <br>[![Open in molab](https://molab.marimo.io/molab-shield.svg)](https://molab.marimo.io/https://github.com/passagemath/passagemath-marimo-notebooks/blob/main/passagemath-cmr.py)    | Seymour's decomposition of totally unimodular matrices and regular matroids, using the [Combinatorial Matrix Recognition](https://discopt.github.io/cmr/) library via [passagemath-cmr](https://pypi.org/project/passagemath-cmr/). |
