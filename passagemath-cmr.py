@@ -627,7 +627,8 @@ def _(Mincostflow):
 
 @app.cell
 def _(Mincostflow, QQ):
-    DPP = Mincostflow.polyhedron(base_ring=QQ); DPP
+    DPP = Mincostflow.polyhedron(base_ring=QQ)
+    print(DPP)
     return (DPP,)
 
 
@@ -693,7 +694,7 @@ def _(W6_clique_vertex_incidence_matrix):
 @app.cell
 def _(QQ, W6_stab_mip):
     W6_qstab = W6_stab_mip.polyhedron(base_ring=QQ)
-    W6_qstab
+    print(W6_qstab)
     return (W6_qstab,)
 
 
@@ -816,9 +817,15 @@ def _(clique_vertex_incidence_matrix, perfect_but_not_unimodular_on_6):
 
 
 @app.cell
-def _(clique_vertex_incidence_matrix, perfect_but_not_unimodular_on_6):
-    [clique_vertex_incidence_matrix(G).is_totally_unimodular(certificate=True)[1][0].as_ordered_tree() 
-     for G in perfect_but_not_unimodular_on_6]
+def _(clique_vertex_incidence_matrix, perfect_but_not_unimodular_on_6, unicode_art):
+    [
+        unicode_art(
+            clique_vertex_incidence_matrix(G)
+            .is_totally_unimodular(certificate=True)[1][0]
+            .as_ordered_tree()
+        )
+        for G in perfect_but_not_unimodular_on_6
+    ]
     return
 
 
