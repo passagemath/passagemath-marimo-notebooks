@@ -4,14 +4,14 @@
 #     "cysignals==1.12.6",
 #     "marimo==0.23.15",
 #     "matplotlib==3.10.9",
-#     "passagemath-cmr[test]==10.8.11",
-#     "passagemath-flint==10.8.11",
-#     "passagemath-graphs==10.8.11",
-#     "passagemath-nauty==10.8.11",
-#     "passagemath-pari==10.8.11",
-#     "passagemath-plot==10.8.11",
-#     "passagemath-polyhedra[flint]==10.8.11",
-#     "passagemath-repl==10.8.11",
+#     "passagemath-cmr[test]==10.8.12rc2",
+#     "passagemath-flint==10.8.12rc2",
+#     "passagemath-graphs==10.8.12rc2",
+#     "passagemath-nauty==10.8.12rc2",
+#     "passagemath-pari==10.8.12rc2",
+#     "passagemath-plot==10.8.12rc2",
+#     "passagemath-polyhedra[flint]==10.8.12rc2",
+#     "passagemath-repl==10.8.12rc2",
 # ]
 # ///
 
@@ -79,7 +79,7 @@ def _(matrix):
 
 @app.cell
 def _(A):
-    A._unicode_art_matrix()
+    A.display()
     return
 
 
@@ -128,7 +128,7 @@ def _(matrix):
 
 @app.cell
 def _(A2):
-    A2._unicode_art_matrix()
+    A2.display()
     return
 
 
@@ -140,7 +140,7 @@ def _(A2):
 
 @app.cell
 def _(A2_certificate):
-    A2_certificate.graph().incidence_matrix(vertices=True,edges=True)._unicode_art_matrix()
+    A2_certificate.graph().incidence_matrix(vertices=True,edges=True).display()
     return
 
 
@@ -283,7 +283,7 @@ def _(G_g):
 
 @app.cell
 def _(M_g):
-    M_g._unicode_art_matrix()
+    M_g.display()
     return
 
 
@@ -394,7 +394,7 @@ def _(A, R10):
 
 @app.cell
 def _(R10_rr):
-    R10_rr._unicode_art_matrix()
+    R10_rr.display()
     return
 
 
@@ -412,7 +412,7 @@ def _(R10_certificate):
 
 @app.cell
 def _(R10_certificate):
-    R10_certificate.morphism()._unicode_art_matrix()
+    R10_certificate.morphism().display()
     return
 
 
@@ -430,7 +430,7 @@ def _(R10D):
 
 @app.cell
 def _(R10D_rr):
-    R10D_rr._unicode_art_matrix()
+    R10D_rr.display()
     return
 
 
@@ -474,7 +474,7 @@ def _(R10_1_R10_certificate, unicode_art):
 
 @app.cell
 def _(R10_1_R10_rr):
-    R10_1_R10_rr._unicode_art_matrix()
+    R10_1_R10_rr.display()
     return
 
 
@@ -526,7 +526,7 @@ def _(AG23minus_ternary):
 
 @app.cell
 def _(AG23minus_rr):
-    AG23minus_rr._unicode_art_matrix()
+    AG23minus_rr.display()
     return
 
 
@@ -583,7 +583,7 @@ def _(DP):
 
 @app.cell
 def _(DPA):
-    DPA._unicode_art_matrix()
+    DPA.display()
     return
 
 
@@ -681,7 +681,7 @@ def _(MixedIntegerLinearProgram, QQ, graphs, matrix):
 
 @app.cell
 def _(W6_clique_vertex_incidence_matrix):
-    W6_clique_vertex_incidence_matrix._unicode_art_matrix()
+    W6_clique_vertex_incidence_matrix.display()
     return
 
 
@@ -797,7 +797,7 @@ def _(clique_vertex_incidence_matrix, graphs):
 @app.cell
 def _(clique_vertex_incidence_matrix, perfect_but_not_unimodular_on_6):
     for g in perfect_but_not_unimodular_on_6: 
-        print(clique_vertex_incidence_matrix(g)._unicode_art_matrix())
+        print(clique_vertex_incidence_matrix(g).display())
     return
 
 
@@ -852,7 +852,7 @@ def _(
             if not isinstance(certificate[0], SeriesParallelReductionNode):
                 yield G, certificate[0].as_ordered_tree() 
     for G345678, tree in interesting_stuff():
-        print(clique_vertex_incidence_matrix(G345678)._unicode_art_matrix())
+        print(clique_vertex_incidence_matrix(G345678).display())
         print(tree)
     return
 
